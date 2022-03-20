@@ -62,7 +62,6 @@ func (h *Handler) getAllItems(c *gin.Context) {
 	c.JSON(http.StatusOK, getAllItemsResponse{
 		Data: items,
 	})
-
 }
 
 func (h *Handler) getItemById(c *gin.Context) {

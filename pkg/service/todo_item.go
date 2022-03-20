@@ -22,7 +22,7 @@ func (s *TodoItemService) Create(userId, listId int, item todo.TodoItem) (int, e
 	if err != nil {
 		return 0, err
 	}
-	return s.repo.Create(userId, listId, item)
+	return s.repo.Create(listId, item)
 }
 
 func (s *TodoItemService) GetAll(userId, listId int) ([]todo.TodoItem, error) {

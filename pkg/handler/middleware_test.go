@@ -2,15 +2,16 @@ package handler
 
 import (
 	"errors"
-	"github.com/vlad-rubtsov/todo-app-backend/pkg/service"
-	mock_service "github.com/vlad-rubtsov/todo-app-backend/pkg/service/mocks"
 	"fmt"
 	"net/http/httptest"
 	"testing"
 
+	"github.com/vlad-rubtsov/todo-app-backend/pkg/service"
+	mock_service "github.com/vlad-rubtsov/todo-app-backend/pkg/service/mocks"
+
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/assert/v2"
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestHandler_userIdentity(t *testing.T) {
@@ -76,7 +77,6 @@ func TestHandler_userIdentity(t *testing.T) {
 			expectedStatusCode:  500,
 			expectedRequestBody: `{"message":"failed to parse token"}`,
 		},
-
 	}
 
 	for _, testCase := range testTable {
@@ -91,13 +91,13 @@ func TestHandler_userIdentity(t *testing.T) {
 			handler := NewHandler(services)
 
 			r := gin.New()
-			r.GET("/protected", handler.userIdentity, func(c *gin.Context) {
+			r.GET("/identity", handler.userIdentity, func(c *gin.Context) {
 				id, _ := c.Get(userCtx)
 				c.String(200, fmt.Sprintf("%d", id.(int)))
 			})
 
 			w := httptest.NewRecorder()
-			req := httptest.NewRequest("GET", "/protected", nil)
+			req := httptest.NewRequest("GET", "/identity", nil)
 			req.Header.Set(testCase.headerName, testCase.headerValue)
 
 			r.ServeHTTP(w, req)
@@ -106,5 +106,42 @@ func TestHandler_userIdentity(t *testing.T) {
 			assert.Equal(t, testCase.expectedRequestBody, w.Body.String())
 		})
 	}
+}
 
+func TestGetUserId(t *testing.T) {
+	var getContext = func(id int) *gin.Context {
+		ctx := &gin.Context{}
+		ctx.Set(userCtx, id)
+		return ctx
+	}
+
+	testTable := []struct {
+		name       string
+		ctx        *gin.Context
+		id         int
+		shouldFail bool
+	}{
+		{
+			name: "Ok",
+			ctx:  getContext(1),
+			id:   1,
+		},
+		{
+			name:       "Empty",
+			ctx:        &gin.Context{},
+			shouldFail: true,
+		},
+	}
+
+	for _, testCase := range testTable {
+		t.Run(testCase.name, func(t *testing.T) {
+			id, err := getUserId(testCase.ctx)
+			if testCase.shouldFail {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+			assert.Equal(t, id, testCase.id)
+		})
+	}
 }

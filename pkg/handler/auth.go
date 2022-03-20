@@ -8,8 +8,6 @@ import (
 )
 
 func (h *Handler) signUp(c *gin.Context) {
-	//fmt.Println("Sign-Up")
-
 	var input todo.User
 
 	if err := c.BindJSON(&input); err != nil {
@@ -34,8 +32,6 @@ type signInInput struct {
 }
 
 func (h *Handler) signIn(c *gin.Context) {
-	//fmt.Println("Sign-In")
-
 	var input signInInput
 
 	if err := c.BindJSON(&input); err != nil {

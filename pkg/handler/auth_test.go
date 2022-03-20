@@ -27,7 +27,7 @@ func TestHandler_signUp(t *testing.T) {
 	}{
 		{
 			name:      "Ok",
-			inputBody: `{"name":"Test","username":"test","password":"qwerty"}`,
+			inputBody: `{"name": "Test", "username": "test", "password": "qwerty"}`,
 			inputUser: todo.User{
 				Name:     "Test",
 				Username: "test",
@@ -48,14 +48,14 @@ func TestHandler_signUp(t *testing.T) {
 		},
 		{
 			name:      "Service failure",
-			inputBody: `{"name":"Test","username":"test","password":"qwerty"}`,
+			inputBody: `{"name": "Test", "username": "test", "password": "qwerty"}`,
 			inputUser: todo.User{
 				Name:     "Test",
 				Username: "test",
 				Password: "qwerty",
 			},
 			mockBehaviour: func(s *mock_service.MockAuthorization, user todo.User) {
-				s.EXPECT().CreateUser(user).Return(1, errors.New("service failure"))
+				s.EXPECT().CreateUser(user).Return(0, errors.New("service failure"))
 			},
 			expectedStatusCode:  500,
 			expectedRequestBody: `{"message":"service failure"}`,

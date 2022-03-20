@@ -9,7 +9,7 @@ import (
 	"github.com/vlad-rubtsov/todo-app-backend"
 	"github.com/vlad-rubtsov/todo-app-backend/pkg/repository"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 )
 
 const salt = "safdadfwe35435t43tewfdsf"
